@@ -1,22 +1,26 @@
 pipeline {
+    environment {
+        dockerRegistry = "javiercaparo/aws-jenkins-pipeline-v4"
+        dockerRegistryCredential = 'dockerhub'
+        dockerImage = ''
+    }
     agent any
+    tools {nodejs "nodejs" }
     stages {
+        stage('Cloning Git') {
+            steps {
+                git 'https://github.com/jfcb853/aws-jenkins-pipeline-v4.git'
+            }
+        }
         stage('Build') {
             steps {
-                sh 'echo "Hello World"'
-                sh '''
-                    echo "Multiline shell steps works too"
-                    ls -lah
-                '''
+                sh 'npm install'
             }
         }
-
-        stage('Get AWS IAM user') {
+        stage('Test') {
             steps {
-                withAWS(region:'us-west-2',credentials:'aws-credentials') {
-                    sh 'aws iam get-user'  
-                }
+                sh 'npm lint'
             }
         }
-     }
+    }
 }
