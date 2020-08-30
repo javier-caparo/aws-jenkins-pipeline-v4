@@ -1,12 +1,17 @@
 pipeline {
-    environment {
-        dockerRegistry = "javiercaparo/aws-jenkins-pipeline-v4"
-        dockerRegistryCredential = 'dockerhub'
-        dockerImage = ''
+    environment { 
+        registry = 'javiercaparo/aws-jenkins-pipeline-v4'
+		registryCredential = 'dockerhub'
+		dockerImage = ''
     }
+
     agent any
 
     tools {nodejs "nodejs" }
+
+    environment { 
+        CI = 'true'
+    }
 
     parameters {
         gitParameter name: 'RELEASE_TAG',
@@ -36,5 +41,32 @@ pipeline {
                 sh "echo tag: ${params.RELEASE_TAG}"
             }
         }
+
+        stage('Build Docker Image') {
+			steps {
+				withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'dockerhub', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD']]){
+					sh '''
+                        docker.build -t $registry:$BUILD_NUMBER .
+					'''
+				}
+			}
+		}
+
+		stage('Push Image To Dockerhub') {
+			steps {
+				withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'dockerhub', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD']]){
+					sh '''
+						docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+						docker push $registry:$BUILD_NUMBER 
+					'''
+				}
+			}
+		}
+
+		stage('Removing image locally') {
+			steps{
+        		sh "docker rmi $registry:$BUILD_NUMBER"
+            }
+		}
     }
 }
