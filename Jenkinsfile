@@ -1,17 +1,15 @@
 pipeline {
+    
     environment { 
         registry = 'javiercaparo/aws-jenkins-pipeline-v4'
 		registryCredential = 'dockerhub'
 		dockerImage = ''
+        CI = 'true'
     }
 
     agent any
 
     tools {nodejs "nodejs" }
-
-    environment { 
-        CI = 'true'
-    }
 
     parameters {
         gitParameter name: 'RELEASE_TAG',
