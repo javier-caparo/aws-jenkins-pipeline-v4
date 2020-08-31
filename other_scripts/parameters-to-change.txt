@@ -1,0 +1,13 @@
+Stack name
+
+Number of Availability Zones  2
+Availability Zones  us-west-2a,us-west2b
+Allowed external access CIDR  0.0.0.0/0
+Provision bastion host  disabled
+SSH key name  jc-udacity-devops
+EKS cluster name  eks-test
+Nodes instance type  t3.small
+Number of nodes  2
+Maximum number of nodes 4
+Kubernetes version  1.16
+Quick Start S3 bucket region  us-west-2

@@ -1,5 +1,7 @@
 pipeline {
     
+    options { timestamps() }
+
     environment { 
         registry = 'javiercaparo/aws-jenkins-pipeline-v4'
 		registryCredential = 'dockerhub'
@@ -18,6 +20,7 @@ pipeline {
     }
 
     stages {
+        
         stage('Cloning Git') {
             steps {
                 git 'https://github.com/jfcb853/aws-jenkins-pipeline-v4.git'
@@ -40,22 +43,56 @@ pipeline {
             }
         }
 
-        stage('Build Docker Image') {
-			steps {
+        stage('Build Docker Image tag:latest') {
+            when {
+                branch 'master'
+            }
+            steps {
+                echo 'buil the image taggin as latest'
+                withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'dockerhub', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD']]){
+					sh '''
+                        docker build -t $registry:latest .
+					'''
+				}
+            }
+        }
+
+        stage('Build Docker Image in Dev branches') {
+            when {
+                not { branch 'master' }
+            }
+            steps {
 				withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'dockerhub', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD']]){
 					sh '''
                         docker build -t $registry:$BUILD_NUMBER .
 					'''
 				}
 			}
-		}
+        }
 
-		stage('Push Image To Dockerhub') {
-			steps {
+		stage('Push Prod Image To Dockerhub') {
+			when {
+                branch 'master'
+            }
+            steps {
 				withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'dockerhub', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD']]){
 					sh '''
 						docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
-						docker push $registry:$BUILD_NUMBER 
+						docker push $registry:latest
+					'''
+				}
+			}
+		}
+
+        stage('Push dev Image To Dockerhub') {
+			when {
+                not { branch 'master' }
+            }
+            steps {
+				withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'dockerhub', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD']]){
+					sh '''
+						docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+						docker push $registry:$BUILD_NUMBER
 					'''
 				}
 			}
@@ -63,8 +100,14 @@ pipeline {
 
 		stage('Removing image locally') {
 			steps{
-        		sh "docker rmi $registry:$BUILD_NUMBER"
+                sh "docker rmi $registry:$BUILD_NUMBER"
             }
 		}
+    }
+
+    post {
+        always {
+            echo “Pipeline finished”
+        }
     }
 }
