@@ -1,0 +1,19 @@
+apiVersion: eksctl.io/v1alpha5
+kind: ClusterConfig
+
+metadata:
+    name: Capstone-cluster
+    region: us-west-2
+
+nodeGroups:
+    - name: ng-1
+      instanceType: t3.small
+      desiredCapacity: 2
+      volumeSize: 20
+      privateNetworking: true
+
+    - name: ng-2
+      instanceType: t3.small
+      desiredCapacity: 2
+      volumeSize: 20
+      privateNetworking: true
