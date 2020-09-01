@@ -173,9 +173,7 @@ pipeline {
                 branch 'master'
             }
             steps {
-                input {
-                    message 'Is your app running ok? Check it out'
-                }
+                input message: 'Checking your web site is ok? (Click "Proceed" to continue)'
             }
         }
 
