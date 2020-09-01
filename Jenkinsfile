@@ -54,10 +54,10 @@ pipeline {
                 branch 'master'
             }
             steps {
-                echo 'build the image tagging as latest'
+                echo 'build the image tagging'
                 withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'dockerhub', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD']]){
 					sh '''
-                        docker build -t $registry:latest .
+                        docker build -t $registry:$BRANCH_NAME.$BUILD_NUMBER .
 					'''
 				}
             }
@@ -72,11 +72,11 @@ pipeline {
                     echo 'Login first'
                     sh 'aws ecr get-login-password --region us-west-2 | docker login --username AWS --password-stdin $ekr_registry'
                     echo 'Build the image to EKR'
-                    sh 'docker build -t eks-webapp:$BUILD_NUMBER .'
+                    sh 'docker build -t eks-webapp:$BRANCH_NAME.$BUILD_NUMBER .'
                     echo 'Tagging the image'
-                    sh 'docker tag eks-webapp:$BUILD_NUMBER $ekr_registry/eks-webapp:$BUILD_NUMBER'
+                    sh 'docker tag eks-webapp:$BRANCH_NAME.$BUILD_NUMBER $ekr_registry/eks-webapp:$BRANCH_NAME.$BUILD_NUMBER'
                     echo 'Push the image to EKR repo'
-                    sh 'docker push 156823553040.dkr.ecr.us-west-2.amazonaws.com/eks-webapp:$BUILD_NUMBER'
+                    sh 'docker push 156823553040.dkr.ecr.us-west-2.amazonaws.com/eks-webapp:$BRANCH_NAME.$BUILD_NUMBER'
                 }
 			}
         }
@@ -89,7 +89,7 @@ pipeline {
 				withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'dockerhub', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD']]){
 					sh '''
 						docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
-						docker push $registry:latest
+						docker push $registry:$BRANCH_NAME.$BUILD_NUMBER
 					'''
 				}
 			}
@@ -118,7 +118,9 @@ pipeline {
             steps {
 				withAWS(credentials: 'aws-credentials', region: 'us-west-2') {
 					sh '''
-						kubectl apply -f ./eks/deployment.yaml
+						sed "s/latest/$BRANCH.$BUILD/g" ./eks/deployment.yaml
+                        grep latest ./eks/deployment.yaml
+                        kubectl apply -f ./eks/deployment.yaml
 						sleep 2
                         kubectl get deployments
 					'''
@@ -172,7 +174,7 @@ pipeline {
                 branch 'master'
             }
             steps{
-                sh "docker rmi $registry:latest"
+                sh "docker rmi $registry:$BRANCH_NAME.$BUILD_NUMBER"
             }
 		}
     }
