@@ -21,7 +21,7 @@ spec:
     spec:
       containers:
       - name: my-app
-        image: javiercaparo/aws-jenkins-pipeline-v4:3
+        image: javiercaparo/aws-jenkins-pipeline-v4:latest
         ports:
         - containerPort: 3000
         imagePullPolicy: Always
