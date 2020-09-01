@@ -1,0 +1,18 @@
+ - got this Error in docker
+
+ubuntu@ip-172-31-56-27:~$ docker info
+Client:
+ Debug Mode: false
+
+Server:
+ERROR: Got permission denied while trying to connect to the Docker daemon socket at unix:///var/run/docker.sock: Get http://%2Fvar%2Frun%2Fdocker.sock/v1.40/info: dial unix /var/run/docker.sock: connect: permission denied
+
+- Fix:
+$ newgrp docker
+$ sudo usermod -aG docker ubuntu
+$ sudo usermod -aG docker jenkins
+$
+ - test
+$ docker info
+$docker run hello-world
+
