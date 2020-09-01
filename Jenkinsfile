@@ -105,19 +105,7 @@ pipeline {
 						aws eks --region $region update-kubeconfig --name $cluster_name
 						ls ~/.kube/config
                         cat ~/.kube/config
-					'''
-				}	
-			}
-		}
-
-        stage('kubectl get svc') {
-			when {
-                branch 'master'
-            }
-            steps {
-				withAWS(credentials: 'aws-credentials', region: 'us-west-2') {
-					sh '''
-						kubectl get svc
+                        kubectl get svc
 					'''
 				}	
 			}
