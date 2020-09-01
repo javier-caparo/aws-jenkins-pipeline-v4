@@ -177,6 +177,7 @@ pipeline {
                     message 'Is your app running ok? Check it out'
                 }
             }
+        }
 
 		stage('Removing image locally') {
 			when {
