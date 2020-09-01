@@ -11,6 +11,7 @@ pipeline {
         region = 'us-west-2'
         s3_bucket = 's3://jc-eks-cloudformation'
         CI = 'true'
+        app = 'my-app'
     }
 
     agent any
@@ -122,22 +123,58 @@ pipeline {
 			}
 		}
 
-        stage('Getting the k8s files') {
+        stage('Deploy to K8s') {
 			when {
                 branch 'master'
             }
             steps {
 				withAWS(credentials: 'aws-credentials', region: 'us-west-2') {
 					sh '''
-						aws s3 cp $s3_bucket/deployment.yaml deployment.yaml
-                        aws s3 cp $s3_bucket/service.yaml service.yaml
-						ls
+						kubectl apply -f ./eks/deployment.yaml
+						sleep 2
+                        kubectl get deployments
 					'''
 				}	
 			}
 		}
 
+        stage('Service to K8s') {
+			when {
+                branch 'master'
+            }
+            steps {
+				withAWS(credentials: 'aws-credentials', region: 'us-west-2') {
+                    sh '''
+                        kubectl get pods -l 'app=my-app' -o wide | awk {'print $1" " $3 " " $6'} | column -t
+                        kubectl apply -f service.yaml
+                        kubectl get services
+                    '''
+				}	
+			}
+		}
 
+        stage('Info about deployment') {
+			when {
+                branch 'master'
+            }
+            steps {
+				withAWS(credentials: 'aws-credentials', region: 'us-west-2') {
+                    sh '''
+                        kubectl get nodes -o wide |  awk {'print $1" " $2 " " $7'} | column -t
+                        kubectl get pods -l 'app=my-app' -o wide | awk {'print $1" " $3 " " $6'} | column -t
+                        kubectl get service/my-app |  awk {'print $1" " $2 " " $4 " " $5'} | column -t
+                  '''
+				}	
+			}
+		}
+
+        stage('Wait user check the app ') {
+            when {
+                branch 'master'
+            }
+            steps {
+                input "Is your app running ok? Check it out"
+            }
 
 		stage('Removing image locally') {
 			when {

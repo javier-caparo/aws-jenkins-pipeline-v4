@@ -71,7 +71,7 @@ sleep 3
 echo -e "$COL># docker installed ...$NOC"
 
 echo -e "$COL># fixing docker errors with permissions$NOC"
-sudo newgrp docker
+newgrp docker
 sudo usermod -aG docker ubuntu
 sudo usermod -aG docker jenkins
 echo -e "$COL># docker fixed permissions issue!!$NOC"
