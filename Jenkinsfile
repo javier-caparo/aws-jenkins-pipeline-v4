@@ -8,6 +8,8 @@ pipeline {
 		registryCredential = 'dockerhub'
         ekr_registry = '156823553040.dkr.ecr.us-west-2.amazonaws.com'
 		dockerImage = ''
+        region = 'us-west-2'
+        s3_bucket = 's3://jc-eks-cloudformation'
         CI = 'true'
     }
 
@@ -89,6 +91,49 @@ pipeline {
 						docker push $registry:latest
 					'''
 				}
+			}
+		}
+
+        stage('Get the cluster kube config') {
+			when {
+                branch 'master'
+            }
+            steps {
+				withAWS(credentials: 'aws-credentials', region: 'us-west-2') {
+					sh '''
+						aws eks --region $region update-kubeconfig --name $cluster_name
+						ls ~/.kube/config
+                        cat ~/.kube/config
+					'''
+				}	
+			}
+		}
+
+        stage('kubectl get svc') {
+			when {
+                branch 'master'
+            }
+            steps {
+				withAWS(credentials: 'aws-credentials', region: 'us-west-2') {
+					sh '''
+						kubectl get svc
+					'''
+				}	
+			}
+		}
+
+        stage('Getting the k8s files') {
+			when {
+                branch 'master'
+            }
+            steps {
+				withAWS(credentials: 'aws-credentials', region: 'us-west-2') {
+					sh '''
+						aws s3 cp $s3_bucket/deployment.yaml deployment.yaml
+                        aws s3 cp $s3_bucket/service.yaml service.yaml
+						ls
+					'''
+				}	
 			}
 		}
 

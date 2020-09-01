@@ -1,5 +1,8 @@
 FROM node:14-alpine
 
+# set maintainer
+LABEL maintainer "javier.caparo@gmail.com"
+
 # Create app directory
 WORKDIR /usr/src/app
 
