@@ -72,7 +72,7 @@ Resources:
                     Encrypted: 'true'
             Tags:
                 - Key: Name
-                  Value: My EC2 Ubuntu Jenkins Server
+                  Value: Ubuntu Jenkins Server
                 - Key: Type
                   Value: Server Instance
             UserData:
@@ -92,8 +92,8 @@ Resources:
                 # install git
                 sudo apt install -y git
                 # Install hadolint
-                wget -O /bin/hadolint https://github.com/hadolint/hadolint/releases/download/v1.18.0/hadolint-Linux-x86_64
-                chmod +x /bin/hadolint
+                sudo wget -O /bin/hadolint https://github.com/hadolint/hadolint/releases/download/v1.18.0/hadolint-Linux-x86_64 
+                sudo chmod +x /bin/hadolint
                 # Install Node.jenkins
                 curl -sL https://deb.nodesource.com/setup_14.x -o nodesource_setup.sh
                 sudo bash nodesource_setup.sh

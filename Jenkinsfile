@@ -33,7 +33,7 @@ pipeline {
                 sh 'npm install'
             }
         }
-        stage('LInting') {
+        stage('Linting') {
             steps {
                 sh 'npm run lint'
             }
@@ -45,7 +45,7 @@ pipeline {
             }
         }
 
-        stage('Build Docker Image -dockerhub') {
+        stage('Build Image to dockerhub') {
             when {
                 branch 'master'
             }
