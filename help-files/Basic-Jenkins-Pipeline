@@ -1,0 +1,34 @@
+pipeline {
+     agent any
+     stages {
+         stage('Build') {
+             steps {
+                 sh 'echo "Hello World"'
+                 sh '''
+                     echo "Multiline shell steps works too"
+                     ls -lah
+                 '''
+             }
+         }
+             
+         stage('Get AWS IAM user') {
+              steps {
+                  withAWS(region:'us-west-2',credentials:'aws-credentials') {
+                    sh 'aws iam get-user'  
+                  }
+              }
+         }
+         
+         stage('Test script') {
+              steps {
+                sh '''
+                    touch test.yaml
+                    echo latest > test.yaml
+                    grep latest test.yaml
+                '''
+                sh "sed -i 's/latest/${env.BUILD_NUMBER}/g' test.yaml"    
+                sh "cat test.yaml"
+               }
+          }
+     }
+}
