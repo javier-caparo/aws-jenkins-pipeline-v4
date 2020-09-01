@@ -3,7 +3,7 @@ pipeline {
     options { timestamps() }
 
     environment { 
-        cluster_name = 'Capstone_cluster'
+        cluster_name = 'Capstone-cluster'
         registry = 'javiercaparo/aws-jenkins-pipeline-v4'
 		registryCredential = 'dockerhub'
         ekr_registry = '156823553040.dkr.ecr.us-west-2.amazonaws.com'
