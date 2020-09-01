@@ -117,8 +117,8 @@ pipeline {
             }
             steps {
 				withAWS(credentials: 'aws-credentials', region: 'us-west-2') {
-					sh '''
-						sed "s/latest/$BRANCH.$BUILD/g" ./eks/deployment.yaml
+					sh "sed -i 's/latest/${env.BRANCH}.${env.BUILD_NUMBER}/g' ./eks/deployment.yaml" 
+                    sh '''
                         grep latest ./eks/deployment.yaml
                         kubectl apply -f ./eks/deployment.yaml
 						sleep 2
