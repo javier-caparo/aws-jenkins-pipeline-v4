@@ -163,7 +163,7 @@ pipeline {
                         kubectl get nodes -o wide |  awk {'print $1" " $2 " " $7'} | column -t
                         kubectl get pods -l 'app=my-app' -o wide | awk {'print $1" " $3 " " $6'} | column -t
                         kubectl get service/my-app |  awk {'print $1" " $2 " " $4 " " $5'} | column -t
-                  '''
+                    '''
 				}	
 			}
 		}
