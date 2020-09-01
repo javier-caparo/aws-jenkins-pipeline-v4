@@ -67,13 +67,12 @@ pipeline {
 				withAWS(credentials: 'aws-credentials', region: 'us-west-2') {
                     echo 'Login first'
                     sh 'aws ecr get-login-password --region us-west-2 | docker login --username AWS --password-stdin $ekr_registry'
-                    echo ' Build the image to EKR'
+                    echo 'Build the image to EKR'
                     sh 'docker build -t eks-webapp:$BUILD_NUMBER .'
-                    echo ' Tagging the image'
+                    echo 'Tagging the image'
                     sh 'docker tag eks-webapp:$BUILD_NUMBER $ekr_registry/eks-webapp:$BUILD_NUMBER'
-                    echo ' Push the image to EKR repo'
-                    sh ' docker push $pwd
-                    ekr_registry/eks-webapp:$BUILD_NUMBER'
+                    echo 'Push the image to EKR repo'
+                    sh 'docker push 156823553040.dkr.ecr.us-west-2.amazonaws.com/eks-webapp:$BUILD_NUMBER'
                 }
 			}
         }

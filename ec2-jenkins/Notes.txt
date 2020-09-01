@@ -8,11 +8,19 @@ Server:
 ERROR: Got permission denied while trying to connect to the Docker daemon socket at unix:///var/run/docker.sock: Get http://%2Fvar%2Frun%2Fdocker.sock/v1.40/info: dial unix /var/run/docker.sock: connect: permission denied
 
 - Fix:
-$ newgrp docker
-$ sudo usermod -aG docker ubuntu
-$ sudo usermod -aG docker jenkins
-$
- - test
+newgrp docker
+sudo usermod -aG docker ubuntu
+sudo usermod -aG docker jenkins
+
+- test again
 $ docker info
 $docker run hello-world
+
+=========
+Jenkins Plugins
+==========
+Ocean Blue
+NodeJS   ( later in global tool configuration : add a Nodejs with name "nodejs" , vresion 14.8.0)
+Pipeline AWS Steps
+GitParameter
 
