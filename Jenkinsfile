@@ -34,6 +34,12 @@ pipeline {
             }
         }
 
+        stage('Lint') {
+            steps {
+                sh 'hadolint Dockerfile'
+            }
+        }
+
         stage('Basic Information') {
             steps {
                 sh "echo tag: ${params.RELEASE_TAG}"
@@ -89,8 +95,11 @@ pipeline {
 
 
 		stage('Removing image locally') {
-			steps{
-                sh "docker rmi $registry:$BUILD_NUMBER"
+			when {
+                branch 'master'
+            }
+            steps{
+                sh "docker rmi $registry:latest"
             }
 		}
     }
