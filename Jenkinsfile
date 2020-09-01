@@ -173,7 +173,9 @@ pipeline {
                 branch 'master'
             }
             steps {
-                input "Is your app running ok? Check it out"
+                input {
+                    message 'Is your app running ok? Check it out'
+                }
             }
 
 		stage('Removing image locally') {
