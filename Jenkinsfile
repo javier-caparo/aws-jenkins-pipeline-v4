@@ -33,11 +33,6 @@ pipeline {
                 sh 'npm install'
             }
         }
-        stage('Linting') {
-            steps {
-                sh 'npm run lint'
-            }
-        }
 
         stage('Basic Information') {
             steps {
@@ -50,7 +45,7 @@ pipeline {
                 branch 'master'
             }
             steps {
-                echo 'buil the image taggin as latest'
+                echo 'build the image tagging as latest'
                 withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'dockerhub', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD']]){
 					sh '''
                         docker build -t $registry:latest .

@@ -23,4 +23,18 @@ Ocean Blue
 NodeJS   ( later in global tool configuration : add a Nodejs with name "nodejs" , vresion 14.8.0)
 Pipeline AWS Steps
 GitParameter
+==========
 
+Jenkins Credentials
+===========
+github (as secret key  , id=empty , description :github)
+dockerhub ( username password  , use id: dockerhub)
+AWS credentials ( AWS credentials , id:aws-credentials, description: aws-credentials access key id, secrect access)
+
+
+Things to re testa nd check
+=========
+stage('Linting') {
+    steps {
+    }
+}

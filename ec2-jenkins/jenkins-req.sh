@@ -11,6 +11,18 @@ echo -e "$COL>Installing aws , eksctl, kubectl,jenkins & docker version...$NOC"
 echo -e "$COL>Check java version...$NOC"
 java -version
 
+echo -e "$COL># Installing NodeJS...$NOC"
+curl -sL https://deb.nodesource.com/setup_14.x -o nodesource_setup.sh
+sudo bash nodesource_setup.sh
+sudo apt install -y nodejs
+sudo apt install -y build-essential
+echo -e "$COL># NodeJS installed ...$NOC"
+
+echo -e "$COL># Installing hadolint...$NOC"
+sudo wget -O /bin/hadolint https://github.com/hadolint/hadolint/releases/download/v1.18.0/hadolint-Linux-x86_64 
+sudo chmod +x /bin/hadolint
+echo -e "$COL># hadolint installed ...$NOC"
+
 echo -e "$COL># Installing awscli v2...$NOC"
 curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
 unzip awscliv2.zip

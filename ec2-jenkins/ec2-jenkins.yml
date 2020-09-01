@@ -91,14 +91,6 @@ Resources:
                 sudo apt install -y unzip
                 # install git
                 sudo apt install -y git
-                # Install hadolint
-                sudo wget -O /bin/hadolint https://github.com/hadolint/hadolint/releases/download/v1.18.0/hadolint-Linux-x86_64 
-                sudo chmod +x /bin/hadolint
-                # Install Node.jenkins
-                curl -sL https://deb.nodesource.com/setup_14.x -o nodesource_setup.sh
-                sudo bash nodesource_setup.sh
-                sudo apt install -y nodejs
-                sudo apt install -y build-essential
 
 Outputs:
     InstanceId:
