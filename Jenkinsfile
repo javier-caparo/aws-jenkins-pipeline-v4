@@ -134,8 +134,10 @@ pipeline {
 				withAWS(credentials: 'aws-credentials', region: 'us-west-2') {
                     sh '''
                         kubectl get pods -l 'app=my-app' -o wide | awk {'print $1" " $3 " " $6'} | column -t
-                        kubectl apply -f service.yaml
+                        kubectl get deployments
+                        kubectl apply -f ./eks/service.yaml
                         kubectl get services
+
                     '''
 				}	
 			}
