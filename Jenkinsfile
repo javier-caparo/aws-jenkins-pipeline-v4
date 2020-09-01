@@ -57,7 +57,7 @@ pipeline {
                 echo 'build the image tagging'
                 withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'dockerhub', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD']]){
 					sh '''
-                        docker build -t $registry:$BRANCH_NAME.$BUILD_NUMBER .
+                        docker build -t $registry:$BUILD_NUMBER .
 					'''
 				}
             }
@@ -89,7 +89,7 @@ pipeline {
 				withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'dockerhub', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD']]){
 					sh '''
 						docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
-						docker push $registry:$BRANCH_NAME.$BUILD_NUMBER
+						docker push $registry:$BUILD_NUMBER
 					'''
 				}
 			}
@@ -117,7 +117,7 @@ pipeline {
             }
             steps {
 				withAWS(credentials: 'aws-credentials', region: 'us-west-2') {
-					sh "sed -i 's/latest/${env.BRANCH}.${env.BUILD_NUMBER}/g' ./eks/deployment.yaml" 
+					sh "sed -i 's/latest/${env.BUILD_NUMBER}/g' ./eks/deployment.yaml" 
                     sh '''
                         grep image ./eks/deployment.yaml
                         kubectl apply -f ./eks/deployment.yaml
@@ -174,7 +174,7 @@ pipeline {
                 branch 'master'
             }
             steps{
-                sh "docker rmi $registry:$BRANCH_NAME.$BUILD_NUMBER"
+                sh "docker rmi $registry:$BUILD_NUMBER"
             }
 		}
     }
